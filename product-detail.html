@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Flow Tee - Ryft</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="index.html">Ryft</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">Collections</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="cart.html" class="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="product-details-layout">
+                <div class="product-gallery">
+                    <div class="product-image-main">
+                        <img id="mainProductImage" src="images/product-tee-styleA-front.jpg" alt="Urban Flow Tee - Front View">
+                    </div>
+                    <div class="product-thumbnails">
+                        <img src="images/product-tee-styleA-thumb-front.jpg" alt="Front View" onclick="switchImage('images/product-tee-styleA-front.jpg', 'Front View')">
+                        <img src="images/product-tee-styleA-thumb-back.jpg" alt="Back View" onclick="switchImage('images/product-tee-styleA-back.jpg', 'Back View')">
+                        <img src="images/product-tee-styleA-thumb-detail.jpg" alt="Detail View" onclick="switchImage('images/product-tee-styleA-detail.jpg', 'Detail View')">
+                    </div>
+                </div>
+
+                <div class="product-info">
+                    <h1>Urban Flow Tee</h1>
+                    <p class="price">Rs 845.00</p>
+                    <p class="product-description">A bold statement piece that combines street style with athletic performance. The Urban Flow Tee features a striking graphic design on premium, breathable fabric that moves with you.</p>
+
+                    <div class="size-selector">
+                        <label for="size">Size:</label>
+                        <div class="size-buttons">
+                            <button type="button" data-size="S">S</button>
+                            <button type="button" data-size="M">M</button>
+                            <button type="button" data-size="L">L</button>
+                            <button type="button" data-size="XL">XL</button>
+                        </div>
+                        <a href="#" class="size-guide-link">Size Guide</a>
+                    </div>
+
+                    <div class="quantity-selector">
+                        <label for="quantity">Quantity:</label>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="10">
+                            <button type="button" class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                        </div>
+                    </div>
+
+                    <button class="add-to-cart-button" onclick="addToCart()">Add to Cart</button>
+
+                    <div class="product-features">
+                        <h3>Product Details</h3>
+                        <ul>
+                            <li>Premium cotton-polyester blend for comfort and durability</li>
+                            <li>Moisture-wicking technology for active wear</li>
+                            <li>Modern athletic fit with street-ready styling</li>
+                            <li>Tagless neck label for comfort</li>
+                            <li>Machine wash cold, tumble dry low</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">Size Guide</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+            </nav>
+            <p>&copy; <span id="year"></span> Ryft. All Rights Reserved.</p>
+            <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+        </div>
+    </footer>
+
+    <script>
+        // Product data
+        const product = {
+            id: 'urban-flow-tee',
+            name: 'Urban Flow Tee',
+            price: 845.00,
+            image: 'images/product-tee-styleA-front.jpg'
+        };
+
+        function switchImage(src, alt) {
+            const mainImage = document.getElementById('mainProductImage');
+            mainImage.src = src;
+            mainImage.alt = alt;
+            
+            const thumbnails = document.querySelectorAll('.product-thumbnails img');
+            thumbnails.forEach(thumb => {
+                thumb.classList.remove('active');
+                if (thumb.src.includes(src)) {
+                    thumb.classList.add('active');
+                }
+            });
+        }
+
+        // Size selector interaction
+        const sizeButtons = document.querySelectorAll('.size-selector button');
+        sizeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                sizeButtons.forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+                product.size = this.dataset.size;
+            });
+        });
+
+        // Quantity controls
+        function updateQuantity(change) {
+            const quantityInput = document.getElementById('quantity');
+            let newValue = parseInt(quantityInput.value) + change;
+            if (newValue >= 1 && newValue <= 10) {
+                quantityInput.value = newValue;
+            }
+        }
+
+        // Add to cart functionality
+        function addToCart() {
+            const selectedSize = document.querySelector('.size-selector button.selected');
+            if (!selectedSize) {
+                alert('Please select a size');
+                return;
+            }
+
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const cartItem = {
+                ...product,
+                size: selectedSize.dataset.size,
+                quantity: quantity
+            };
+
+            // Get existing cart or initialize empty array
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Check if item with same size exists
+            const existingItemIndex = cart.findIndex(item => 
+                item.id === cartItem.id && item.size === cartItem.size
+            );
+
+            if (existingItemIndex !== -1) {
+                // Update quantity if item exists
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                // Add new item
+                cart.push(cartItem);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update cart count
+            updateCartCount();
+
+            // Show success message
+            alert(`${quantity} ${product.name} (Size: ${cartItem.size}) added to cart!`);
+        }
+
+        // Update cart count in header
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelectorAll('.cart-count').forEach(el => {
+                el.textContent = totalItems;
+            });
+        }
+
+        // Initialize
+        document.querySelector('.product-thumbnails img').classList.add('active');
+        updateCartCount();
+    </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Ryft</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="index.html">Ryft</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">Collections</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="cart.html" class="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Your Cart</h1>
+            <div class="cart-container">
+                <div class="cart-items" id="cartItems">
+                    <!-- Cart items will be dynamically inserted here -->
+                </div>
+                <div class="cart-summary">
+                    <h2>Order Summary</h2>
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="subtotal">Rs 0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span id="total">Rs 0.00</span>
+                        </div>
+                    </div>
+                    <button class="checkout-button" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+                </div>
+            </div>
+
+            <!-- UPI Payment Modal -->
+            <div id="upiModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeUPIPayment()">&times;</span>
+                    <h2>Complete Your Purchase</h2>
+                    <div class="upi-payment-section">
+                        <div class="upi-qr-container">
+                            <img src="images/upi-qr-placeholder.png" alt="UPI QR Code" class="upi-qr">
+                            <p class="upi-id">UPI ID: ryft@upi</p>
+                        </div>
+                        <div class="upi-instructions">
+                            <h3>How to Pay</h3>
+                            <ol>
+                                <li>Open your UPI app (Google Pay, PhonePe, etc.)</li>
+                                <li>Scan the QR code or enter the UPI ID</li>
+                                <li>Enter the exact amount shown</li>
+                                <li>Complete the payment</li>
+                            </ol>
+                            <div class="payment-status">
+                                <p>Waiting for payment...</p>
+                                <div class="loading-spinner"></div>
+                            </div>
+                            <button class="payment-complete-button" onclick="completePayment()">I've Made the Payment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">Size Guide</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+            </nav>
+            <p>&copy; <span id="year"></span> Ryft. All Rights Reserved.</p>
+            <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+        </div>
+    </footer>
+
+    <script>
+        function updateCartDisplay() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsContainer = document.getElementById('cartItems');
+            const subtotalElement = document.getElementById('subtotal');
+            const totalElement = document.getElementById('total');
+            
+            // Update cart count in header
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelectorAll('.cart-count').forEach(el => {
+                el.textContent = totalItems;
+            });
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+                subtotalElement.textContent = 'Rs 0.00';
+                totalElement.textContent = 'Rs 0.00';
+                return;
+            }
+
+            let subtotal = 0;
+            cartItemsContainer.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                return `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="item-details">
+                            <h3>${item.name}</h3>
+                            <p>Size: ${item.size}</p>
+                            <p class="price">Rs ${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="quantity-controls">
+                            <button type="button" class="quantity-btn" onclick="updateCartItemQuantity('${item.id}', '${item.size}', -1)">-</button>
+                            <span class="quantity">${item.quantity}</span>
+                            <button type="button" class="quantity-btn" onclick="updateCartItemQuantity('${item.id}', '${item.size}', 1)">+</button>
+                        </div>
+                        <button class="remove-item" onclick="removeFromCart('${item.id}', '${item.size}')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            subtotalElement.textContent = `Rs ${subtotal.toFixed(2)}`;
+            totalElement.textContent = `Rs ${subtotal.toFixed(2)}`;
+        }
+
+        function updateCartItemQuantity(id, size, change) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const itemIndex = cart.findIndex(item => item.id === id && item.size === size);
+            
+            if (itemIndex !== -1) {
+                const newQuantity = cart[itemIndex].quantity + change;
+                if (newQuantity > 0) {
+                    cart[itemIndex].quantity = newQuantity;
+                } else {
+                    cart.splice(itemIndex, 1);
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay();
+            }
+        }
+
+        function removeFromCart(id, size) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const updatedCart = cart.filter(item => !(item.id === id && item.size === size));
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+            updateCartDisplay();
+        }
+
+        // UPI Payment Modal Functions
+        function showUPIPayment() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert('Your cart is empty');
+                return;
+            }
+            document.getElementById('upiModal').style.display = 'block';
+        }
+
+        function closeUPIPayment() {
+            document.getElementById('upiModal').style.display = 'none';
+        }
+
+        function completePayment() {
+            // Simulate payment processing
+            const paymentStatus = document.querySelector('.payment-status');
+            paymentStatus.innerHTML = '<p class="success">Payment Successful!</p>';
+            
+            // Clear cart after successful payment
+            setTimeout(() => {
+                localStorage.removeItem('cart');
+                updateCartDisplay();
+                closeUPIPayment();
+                alert('Thank you for your purchase! Your order has been confirmed.');
+            }, 2000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('upiModal');
+            if (event.target == modal) {
+                closeUPIPayment();
+            }
+        }
+
+        // Initialize cart display
+        updateCartDisplay();
+    </script>
+</body>
+</html> 

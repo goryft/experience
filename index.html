@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ryft - Performance Meets Street Style</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="index.html">Ryft</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">Collections</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="cart.html" class="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <img src="images/home-hero-lifestyle.jpg" alt="Athleisure wear in urban setting">
+                <h1>Where Performance Meets Street Style</h1>
+                <p>Premium athleisure designed for the modern urban athlete. Bold graphics, exceptional comfort, and street-ready aesthetics.</p>
+                <a href="#featured" class="cta-button">Explore Collections</a>
+            </div>
+        </section>
+
+        <section id="featured" class="featured-products">
+            <div class="container">
+                <h2>Featured Collections</h2>
+                <div class="product-grid">
+                    <div class="product-item">
+                        <img src="images/home-featured-tee-styleA.jpg" alt="Urban Flow Graphic Tee">
+                        <h3>Urban Flow Tee</h3>
+                        <p>Rs 845.00</p>
+                        <a href="product-detail.html">View Details</a>
+                    </div>
+
+                    <div class="product-item">
+                        <img src="images/home-featured-tank-styleB.jpg" alt="Street Performance Tank">
+                        <h3>Street Performance Tank</h3>
+                        <p>Rs 940.00</p>
+                        <a href="product-detail.html">View Details</a>
+                    </div>
+
+                    <div class="product-item">
+                        <img src="images/home-featured-tee-styleC.jpg" alt="Urban Motion Tee">
+                        <h3>Urban Motion Tee</h3>
+                        <p>Rs 745.00</p>
+                        <a href="product-detail.html">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">Size Guide</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+            </nav>
+            <p>&copy; <span id="year"></span> Ryft. All Rights Reserved.</p>
+            <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+        </div>
+    </footer>
+</body>
+</html>
