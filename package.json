@@ -2,17 +2,21 @@
   "name": "ryft-ecommerce",
   "version": "1.0.0",
   "description": "Ryft - Performance Meets Street Style",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "netlify dev",
-    "build": "netlify build",
-    "deploy": "netlify deploy --prod"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "netlify:dev": "netlify dev",
+    "netlify:build": "netlify build",
+    "netlify:deploy": "netlify deploy --prod"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
     "dotenv": "^16.3.1"
   },
   "devDependencies": {
+    "vite": "^5.0.0",
     "netlify-cli": "^17.0.0"
   }
 } 
