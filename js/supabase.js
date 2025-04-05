@@ -1,36 +1,159 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/+esm';
 
-const supabaseUrl = 'YOUR_SUPABASE_URL'
-const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'
+// Get the Supabase URL and anon key from environment variables
+const supabaseUrl = 'https://xyzcompany.supabase.co';  // Replace with your Supabase project URL
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';  // Replace with your Supabase anon key
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// Create Supabase client with additional options
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+    },
+    global: {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+    }
+});
 
-// Helper functions for common operations
-export const auth = {
-    async signUp(email, password) {
+// Listen for auth state changes
+supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN') {
+        console.log('User signed in:', session?.user?.email)
+    } else if (event === 'SIGNED_OUT') {
+        console.log('User signed out')
+    }
+})
+
+/**
+ * Sign up a new user
+ * @param {string} email 
+ * @param {string} password 
+ * @param {string} fullName 
+ */
+export async function signUpUser(email, password, fullName) {
+    try {
         const { data, error } = await supabase.auth.signUp({
             email,
-            password
+            password,
+            options: {
+                data: { full_name: fullName }
+            }
         })
-        return { data, error }
-    },
 
-    async signIn(email, password) {
+        if (error) throw error
+
+        // Wait for session to be established
+        if (data.user) {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+
+        return {
+            user: data.user,
+            error: null
+        }
+    } catch (error) {
+        console.error('Sign up error:', error.message)
+        return {
+            user: null,
+            error
+        }
+    }
+}
+
+/**
+ * Sign in an existing user
+ * @param {string} email 
+ * @param {string} password 
+ */
+export async function signInUser(email, password) {
+    try {
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password
         })
-        return { data, error }
-    },
 
-    async signOut() {
+        if (error) throw error
+
+        // Wait for session to be established
+        if (data.user) {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+
+        return {
+            user: data.user,
+            error: null
+        }
+    } catch (error) {
+        console.error('Sign in error:', error.message)
+        return {
+            user: null,
+            error
+        }
+    }
+}
+
+/**
+ * Sign out the current user
+ */
+export async function signOutUser() {
+    try {
         const { error } = await supabase.auth.signOut()
+        if (error) throw error
+        return { error: null }
+    } catch (error) {
+        console.error('Sign out error:', error.message)
         return { error }
-    },
+    }
+}
 
-    async getSession() {
-        const { data, error } = await supabase.auth.getSession()
-        return { data, error }
+/**
+ * Get the current authenticated user
+ */
+export async function getCurrentUser() {
+    try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) throw error
+
+        if (!session) {
+            return { user: null, error: null }
+        }
+
+        return { user: session.user, error: null }
+    } catch (error) {
+        console.error('Get current user error:', error.message)
+        return { user: null, error }
+    }
+}
+
+/**
+ * Get user profile data
+ * @param {string} userId 
+ */
+export async function getUserProfile(userId) {
+    try {
+        const { data, error } = await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('id', userId)
+            .single()
+
+        if (error) throw error
+
+        return {
+            profile: data,
+            error: null
+        }
+    } catch (error) {
+        console.error('Get user profile error:', error.message)
+        return {
+            profile: null,
+            error
+        }
     }
 }
 
