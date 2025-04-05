@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ryft</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/admin/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="/images/logo.svg" alt="Ryft Logo">
+            </div>
+            <nav class="admin-nav">
+                <a href="#dashboard" class="active"><i class="ri-dashboard-line"></i> Dashboard</a>
+                <a href="#products"><i class="ri-shopping-bag-line"></i> Products</a>
+                <a href="#categories"><i class="ri-price-tag-3-line"></i> Categories</a>
+                <a href="#inventory"><i class="ri-store-line"></i> Inventory</a>
+                <a href="#sizes"><i class="ri-t-shirt-line"></i> Sizes</a>
+                <a href="/" target="_blank"><i class="ri-store-2-line"></i> View Store</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="admin-header">
+                <h1>Dashboard</h1>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="ri-logout-box-r-line"></i> Logout
+                </button>
+            </header>
+
+            <!-- Dashboard Stats -->
+            <section class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Total Products</h3>
+                    <p id="totalProducts">Loading...</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Products</h3>
+                    <p id="activeProducts">Loading...</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Categories</h3>
+                    <p id="totalCategories">Loading...</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Low Stock Items</h3>
+                    <p id="lowStockItems">Loading...</p>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section id="products" class="content-section">
+                <div class="section-header">
+                    <h2>Products</h2>
+                    <button id="addProductBtn" class="add-btn">
+                        <i class="ri-add-line"></i> Add Product
+                    </button>
+                </div>
+                <div class="products-grid">
+                    Loading...
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section id="categories" class="content-section">
+                <div class="section-header">
+                    <h2>Categories</h2>
+                    <button id="addCategoryBtn" class="add-btn">
+                        <i class="ri-add-line"></i> Add Category
+                    </button>
+                </div>
+                <div class="categories-grid">
+                    Loading...
+                </div>
+            </section>
+
+            <!-- Inventory Section -->
+            <section id="inventory" class="content-section">
+                <div class="section-header">
+                    <h2>Inventory</h2>
+                </div>
+                <div class="inventory-grid">
+                    Loading...
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Add New Product</h2>
+            <form id="productForm">
+                <div class="form-group">
+                    <label for="name">Product Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select a category</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="imageInput">Product Image</label>
+                    <input type="file" id="imageInput" name="image" accept="image/*">
+                    <img id="imagePreview" style="display: none; max-width: 200px; margin-top: 10px;">
+                </div>
+                <div class="form-group">
+                    <label>Inventory</label>
+                    <div id="sizeInventory">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Add Product</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="/admin/admin.js"></script>
+</body>
+</html> 
